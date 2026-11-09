@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRIND: SCHOOL CONTROL — Образовательная экосистема</title>
+    <style>
+        /* Премиальная эстетика Old Money: благородный темно-изумрудный и матовое серебро */
+        :root {
+            --bg-color: #0c1c16;      
+            --card-bg: #12261e;       
+            --accent-silver: #e1e7e5; 
+            --muted-silver: #8ea39c;  
+            --border-line: rgba(225, 231, 229, 0.1); 
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--accent-silver);
+            font-family: 'Cinzel', 'Times New Roman', Times, serif;
+            letter-spacing: 1px;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+
+        /* Тонкая шапка */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 40px 0;
+            border-bottom: 1px solid var(--border-line);
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: var(--accent-silver);
+        }
+
+        .badge-system {
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--muted-silver);
+            border: 1px solid var(--border-line);
+            padding: 6px 16px;
+        }
+
+        /* Дорогой Hero-блок с уникальным названием по центру */
+        .hero {
+            text-align: center;
+            padding: 130px 0 90px 0;
+        }
+
+        .hero h1 {
+            font-size: 46px; 
+            font-weight: 400;
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+            letter-spacing: 8px; 
+            color: var(--accent-silver);
+            line-height: 1.2;
+        }
+
+        .hero h1 span {
+            display: block;
+            font-size: 24px;
+            letter-spacing: 14px;
+            color: var(--muted-silver);
+            margin-top: 15px;
+            font-weight: 300;
+        }
+
+        .hero p {
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            color: var(--muted-silver);
+            max-width: 650px;
+            margin: 40px auto 50px auto;
+            line-height: 1.8;
+            letter-spacing: 0.5px;
+        }
+
+        /* Серебряная кнопка-акцент */
+        .btn-premium {
+            display: inline-block;
+            background-color: transparent;
+            color: var(--accent-silver);
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 20px 45px;
+            border: 1px solid var(--accent-silver);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .btn-premium:hover {
+            background-color: var(--accent-silver);
+            color: var(--bg-color);
+            box-shadow: 0 10px 30px rgba(225, 231, 229, 0.15);
+        }
+
+        /* Архитектурная сетка классов */
+        .grid-classes {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background-color: var(--border-line);
+            margin: 40px 0 100px 0;
+            border: 1px solid var(--border-line);
+        }
+
+        .class-item {
+            background-color: var(--bg-color);
+            padding: 30px 10px;
+            text-align: center;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--muted-silver);
+            transition: all 0.3s ease;
+        }
+
+        .class-item.active {
+            color: var(--accent-silver);
+            background-color: var(--card-bg);
+            font-weight: 600;
+        }
+
+        /* Элегантные блоки структуры */
+        .sections-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin-bottom: 120px;
+        }
+
+        .info-node {
+            border-top: 1px solid var(--accent-silver);
+            padding-top: 25px;
+        }
+
+        .info-node h3 {
+            font-size: 16px;
+            font-weight: 400;
+            text-transform: uppercase;
+            margin: 0 0 15px 0;
+            letter-spacing: 3px;
+        }
+
+        .info-node p {
+            font-family: 'Inter', sans-serif;
+            color: var(--muted-silver);
+            font-size: 13px;
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        /* Тонкий блок прайса */
+        .exclusive-tier {
+            border: 1px solid var(--border-line);
+            padding: 80px 40px;
+            text-align: center;
+            margin-bottom: 140px;
+            background: linear-gradient(180deg, #12261e 0%, #0c1c16 100%);
+        }
+
+        .exclusive-tier h2 {
+            font-size: 24px;
+            font-weight: 300;
+            text-transform: uppercase;
+            margin: 0 0 20px 0;
+            letter-spacing: 5px;
+        }
+
+        .exclusive-tier p {
+            font-family: 'Inter', sans-serif;
+            color: var(--muted-silver);
+            font-size: 14px;
+            margin-bottom: 40px;
+        }
+
+        .amount {
+            font-size: 64px;
+            font-weight: 300;
+            margin-bottom: 40px;
+            letter-spacing: -2px;
+        }
+
+        .amount span {
+            font-size: 16px;
+            color: var(--muted-silver);
+            letter-spacing: 1px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        footer {
+            text-align: center;
+            padding: 50px 0;
+            color: #26473e;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-top: 1px solid var(--border-line);
+            font-family: 'Inter', sans-serif;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 32px; letter-spacing: 4px; }
+            .hero h1 span { font-size: 16px; letter-spacing: 6px; }
+            .grid-classes { grid-template-columns: repeat(2, 1fr); }
+            .sections-container { grid-template-columns: 1fr; gap: 40px; }
+            .hero { padding: 90px 0 60px 0; }
+        }
+    </style>
+    <link href="https://googleapis.com" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container">
+        <!-- Шапка -->
+        <header>
+            <div class="logo">GRIND</div>
+            <div class="badge-system">Высшая школа • 5-11 Классы</div>
+        </header>
+
+        <!-- Главный экран: Уникальное звучное название под твой ТГ тег -->
+        <section class="hero">
+            <h1>GRIND<span>SCHOOL CONTROL</span></h1>
+            <p>Академическая база знаний, созданная для тех, кто нацелен на безупречный результат. Полная выжимка верифицированной теории, алгоритмов и фундаментальных шпаргалок строго по стандартам образования.</p>
+            
+            <!-- Ссылка на бота вшита здесь наглухо -->
+            <a href="https://t.me" class="btn-premium" target="_blank">Интегрировать бота</a>
+        </section>
+
+        <!-- Сетка направлений -->
+        <section class="grid-classes">
+            <div class="class-item active">ЕГЭ (11 класс)</div>
+            <div class="class-item">ОГЭ (9 класс)</div>
+            <div class="class-item">Средняя школа</div>
+            <div class="class-item">Профили</div>
+        </section>
+
+        <!-- Структура сути проекта -->
+        <section class="sections-container">
+            <div class="info-node">
+                <h3>Преимущество</h3>
+                <p>Ровно половина академических материалов по каждому предмету находится в открытом демонстрационном доступе. Безупречное качество без компромиссов.</p>
+            </div>
+            <div class="info-node">
+                <h3>Защита</h3>
+                <p>Контент транслируется через уникальные защищенные медиа-структуры. Полное исключение внешнего копирования, трансляции или несанкционированных сливов.</p>
+            </div>
+            <div class="info-node">
+                <h3>Регламент</h3>
+                <p>Внутри системы поддерживается строгий этический кодекс. Любые формы спама или токсичности караются аннулированием активных доступов.</p>
+            </div>
+        </section>
+
+        <!-- Подключение тарифов -->
+        <section class="pricing-box exclusive-tier">
+            <h2>Фиксированная подписка</h2>
+            <p>Вы получаете доступ исключительно к тем дисциплинам, которые необходимы для вашей личной траектории обучения.</p>
+            <div class="amount">100 ₽ <span>/ 30 дней доступа к предмету</span></div>
+            
+            <!-- Ссылка на бота вшита здесь наглухо -->
+            <a href="https://t.me" class="btn-premium" target="_blank">Открыть полный доступ</a>
+        </section>
+
+        <footer>
+            &copy; 2027 GRIND EDUCATIONAL ECOSYSTEM. MANAGEMENT SYSTEM.
+        </footer>
+    </div>
+
+</body>
+</html>
