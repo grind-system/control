@@ -310,25 +310,26 @@
             <div style="font-size: 10px; color: #00ffaa; font-family: monospace; letter-spacing: 2px; margin-bottom: 15px; text-align: center;">[РЕГИСТРАЦИЯ НОВОГО ОТЗЫВА]</div>
             <h2 style="text-align: center; margin-bottom: 25px; font-size: 22px;">Поделитесь результатом</h2>
             
-            <form id="webReviewForm" action="https://script.google.com/macros/s/AKfycbz88EHQCeawmX_2EZBqxaUlrO_qXSuDTaBokUqY96QmLjMYqHZI8iLHuAKQ84ePwNKzaw/exec" method="POST" onsubmit="handleReviewSubmit(event)">
+                       <form id="webReviewForm" action="https://script.google.com/macros/s/AKfycbz88EHQCeawmX_2EZBqxaUlrO_qXSuDTaBokUqY96QmLjMYqHZI8iLHuAKQ84ePwNKzaw/exec" method="POST" onsubmit="handleReviewSubmit(event)">
                 <div style="margin-bottom: 15px;">
                     <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px;">Ваше Имя / Никнейм:</label>
-                    <input type="text" id="revName" required style="width: 100%; background: rgba(255,255,255,0.02); border: 1px solid var(--border-line); padding: 12px; border-radius: 4px; color: #fff; box-sizing: border-box; font-family: inherit;">
+                    <input type="text" id="revName" name="name" required style="width: 100%; background: rgba(255,255,255,0.02); border: 1px solid var(--border-line); padding: 12px; border-radius: 4px; color: #fff; box-sizing: border-box; font-family: inherit;">
                 </div>
                 <div style="margin-bottom: 15px;">
                     <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px;">Дисциплина:</label>
-                    <input type="text" id="revSubject" placeholder="Например: Профильная Математика" required style="width: 100%; background: rgba(255,255,255,0.02); border: 1px solid var(--border-line); padding: 12px; border-radius: 4px; color: #fff; box-sizing: border-box; font-family: inherit;">
+                    <input type="text" id="revSubject" name="subject" placeholder="Например: Профильная Математика" required style="width: 100%; background: rgba(255,255,255,0.02); border: 1px solid var(--border-line); padding: 12px; border-radius: 4px; color: #fff; box-sizing: border-box; font-family: inherit;">
                 </div>
                 <div style="margin-bottom: 15px;">
                     <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px;">Ваш результат (Баллы / Прогресс):</label>
-                    <input type="text" id="revResult" placeholder="Например: Сдал пробник на 84 балла" required style="width: 100%; background: rgba(255,255,255,0.02); border: 1px solid var(--border-line); padding: 12px; border-radius: 4px; color: #fff; box-sizing: border-box; font-family: inherit;">
+                    <input type="text" id="revResult" name="result" placeholder="Например: Сдал пробник на 84 балла" required style="width: 100%; background: rgba(255,255,255,0.02); border: 1px solid var(--border-line); padding: 12px; border-radius: 4px; color: #fff; box-sizing: border-box; font-family: inherit;">
                 </div>
                 <div style="margin-bottom: 25px;">
                     <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px;">Текст отзыва:</label>
-                    <textarea id="revText" rows="4" required style="width: 100%; background: rgba(255,255,255,0.02); border: 1px solid var(--border-line); padding: 12px; border-radius: 4px; color: #fff; box-sizing: border-box; font-family: inherit; resize: none; line-height: 1.5;"></textarea>
+                    <textarea id="revText" name="message" rows="4" required style="width: 100%; background: rgba(255,255,255,0.02); border: 1px solid var(--border-line); padding: 12px; border-radius: 4px; color: #fff; box-sizing: border-box; font-family: inherit; resize: none; line-height: 1.5;"></textarea>
                 </div>
                 <button type="submit" class="btn-main" style="width: 100%; border: none;">Отправить на верификацию</button>
             </form>
+
             
             <div id="reviewSuccessMessage" style="display: none; text-align: center; padding: 30px 0;">
                 <div style="font-size: 48px; margin-bottom: 15px;">🪙</div>
