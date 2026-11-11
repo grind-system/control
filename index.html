@@ -473,10 +473,9 @@
         }
 
         // Отрисовка одной карточки отзыва на сайте
-               const SCRIPT_URL = "https://google.com";
-        const CSV_URL = "https://google.com";
+                const SCRIPT_URL = "https://google.com";
 
-        // 1. Отрисовка карточки (кнопка удаления появится только у автора)
+        // 1. Отрисовка карточки на сайте
         function appendReviewCard(id, name, subject, result, text) {
             const reviewsContainer = document.getElementById('web-reviews-list');
             if (!reviewsContainer || !text) return;
@@ -502,36 +501,23 @@
             reviewsContainer.insertBefore(card, reviewsContainer.firstChild);
         }
 
-        // 2. Загрузка всех отзывов из Google Таблицы при открытии сайта
+        // 2. Мгновенная загрузка всех отзывов для всех посетителей сайта
         document.addEventListener("DOMContentLoaded", () => {
-            fetch(CSV_URL + "&t=" + Date.now())
-                .then(res => res.text())
-                .then(csvText => {
+            fetch(SCRIPT_URL)
+                .then(res => res.json())
+                .then(reviews => {
                     const reviewsContainer = document.getElementById('web-reviews-list');
                     if (!reviewsContainer) return;
 
                     reviewsContainer.innerHTML = "";
-                    const lines = csvText.split(/\r?\n/);
-
-                    for (let i = 1; i < lines.length; i++) {
-                        if (!lines[i].trim()) continue;
-
-                        const cols = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                        const clean = (val) => val ? val.replace(/^"|"$/g, '').replace(/""/g, '"').trim() : "";
-
-                        const name = clean(cols[0]);
-                        const subject = clean(cols[1]);
-                        const result = clean(cols[2]);
-                        const text = clean(cols[3]);
-                        const id = clean(cols[4]);
-
-                        appendReviewCard(id, name, subject, result, text);
-                    }
+                    reviews.forEach(rev => {
+                        appendReviewCard(rev.id, rev.name, rev.subject, rev.result, rev.text);
+                    });
                 })
                 .catch(err => console.error("Ошибка загрузки отзывов:", err));
         });
 
-        // 3. Отправка нового отзыва без вылета со страницы
+        // 3. Отправка нового отзыва в таблицу и на сайт
         function handleReviewSubmit(e) {
             e.preventDefault();
             const form = document.getElementById('webReviewForm');
@@ -542,7 +528,6 @@
             const textVal = document.getElementById('revText').value;
             const reviewId = String(Date.now());
 
-            // Запоминаем ID в браузере автора
             const myIds = JSON.parse(localStorage.getItem('my_review_ids') || '[]');
             myIds.push(reviewId);
             localStorage.setItem('my_review_ids', JSON.stringify(myIds));
@@ -568,7 +553,7 @@
             .catch(err => console.error("Ошибка отправки:", err));
         }
 
-        // 4. Удаление выбранного отзыва с экрана и из Google Таблицы
+        // 4. Удаление своего отзыва с экрана и из таблицы
         function deleteMyReview(id) {
             const card = document.getElementById('rev-card-' + id);
             if (card) card.remove();
@@ -587,6 +572,7 @@
                 body: params
             });
         }
+
 
             
             then(() => {
