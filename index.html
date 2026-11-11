@@ -310,7 +310,7 @@
             <div style="font-size: 10px; color: #00ffaa; font-family: monospace; letter-spacing: 2px; margin-bottom: 15px; text-align: center;">[РЕГИСТРАЦИЯ НОВОГО ОТЗЫВА]</div>
             <h2 style="text-align: center; margin-bottom: 25px; font-size: 22px;">Поделитесь результатом</h2>
             
-                       <form id="webReviewForm" action="https://script.google.com/macros/s/AKfycbz88EHQCeawmX_2EZBqxaUlrO_qXSuDTaBokUqY96QmLjMYqHZI8iLHuAKQ84ePwNKzaw/exec" method="POST">
+                       <form id="webReviewForm" action="https://script.google.com/macros/s/AKfycbz88EHQCeawmX_2EZBqxaUlrO_qXSuDTaBokUqY96QmLjMYqHZI8iLHuAKQ84ePwNKzaw/exec" method="POST" onsubmit="handleReviewSubmit(event)">
                 <div style="margin-bottom: 15px;">
                     <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px;">Ваше Имя / Никнейм:</label>
                     <input type="text" id="revName" name="name" required style="width: 100%; background: rgba(255,255,255,0.02); border: 1px solid var(--border-line); padding: 12px; border-radius: 4px; color: #fff; box-sizing: border-box; font-family: inherit;">
@@ -473,15 +473,47 @@
             document.getElementById('reviewModal').style.display = 'none'; 
         }
 
+               // Автоматическая загрузка всех отзывов из Google Таблицы
         document.addEventListener("DOMContentLoaded", () => {
-            const savedReviews = localStorage.getItem("user_multiple_reviews");
-            if (savedReviews) {
-                const reviewsArray = JSON.parse(savedReviews);
-                reviewsArray.forEach(rev => {
-                    renderUserReview(rev.id, rev.name, rev.subject, rev.result, rev.text);
-                });
-            }
+            const csvUrl = "https://google.com" + Date.now();
+
+            fetch(csvUrl, { cache: "no-store" })
+                .then(res => res.text())
+                .then(csvText => {
+                    const reviewsContainer = document.getElementById('web-reviews-list');
+                    if (!reviewsContainer) return;
+
+                    reviewsContainer.innerHTML = "";
+                    const lines = csvText.split(/\r?\n/);
+
+                    // Начинаем с i = 1, чтобы пропустить строку заголовков
+                    for (let i = 1; i < lines.length; i++) {
+                        if (!lines[i].trim()) continue;
+
+                        // Разбиваем строку CSV с учетом возможных запятых внутри текста отзыва
+                        const columns = lines[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || lines[i].split(",");
+                        const clean = (val) => val ? val.replace(/^"|"$/g, '').replace(/""/g, '"').trim() : "";
+
+                        const name = clean(columns[0]) || "Ученик";
+                        const subject = clean(columns[1]);
+                        const result = clean(columns[2]);
+                        const text = clean(columns[3]);
+
+                        if (!text) continue;
+
+                        const card = document.createElement('div');
+                        card.className = 'review-card';
+                        card.innerHTML = `
+                            <div class="review-author">${name}</div>
+                            <div class="review-meta">${subject}${result ? ' — ' + result : ''}</div>
+                            <p class="review-text">«${text}»</p>
+                        `;
+                        reviewsContainer.insertBefore(card, reviewsContainer.firstChild);
+                    }
+                })
+                .catch(err => console.error("Ошибка загрузки отзывов:", err));
         });
+
 
         function renderUserReview(id, name, subject, result, text) {
             const reviewsContainer = document.getElementById('web-reviews-list');
@@ -507,30 +539,30 @@
             }
         }
 
-        function handleReviewSubmit(e) {
+                function handleReviewSubmit(e) {
             e.preventDefault();
+            const form = document.getElementById('webReviewForm');
             
-            const name = document.getElementById('revName').value;
-            const subject = document.getElementById('revSubject').value;
-            const result = document.getElementById('revResult').value;
-            const text = document.getElementById('revText').value;
-            
-            const reviewId = Date.now();
-            const newReviewObject = { id: reviewId, name, subject, result, text };
-            
-            let currentReviews = localStorage.getItem("user_multiple_reviews");
-            let reviewsArray = currentReviews ? JSON.parse(currentReviews) : [];
-            
-            reviewsArray.push(newReviewObject);
-            localStorage.setItem("user_multiple_reviews", JSON.stringify(reviewsArray));
-            
-            renderUserReview(reviewId, name, subject, result, text);
-            
-            document.getElementById('webReviewForm').style.display = 'none';
-            document.getElementById('reviewSuccessMessage').style.display = 'block';
-            
-            document.getElementById('webReviewForm').reset();
+            fetch(form.action, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: new FormData(form)
+            })
+            .then(() => {
+                form.style.display = 'none';
+                document.getElementById('reviewSuccessMessage').style.display = 'block';
+                form.reset();
+                
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2500);
+            })
+            .catch(err => {
+                alert("Ошибка при отправке. Попробуйте позже.");
+                console.error(err);
+            });
         }
+
 
         function deleteSelectedReview(id) {
             const card = document.getElementById(`user-review-${id}`);
