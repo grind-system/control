@@ -311,6 +311,7 @@
             <h2 style="text-align: center; margin-bottom: 25px; font-size: 22px;">Поделитесь результатом</h2>
             
                        <form id="webReviewForm" action="https://script.google.com/macros/s/AKfycbz88EHQCeawmX_2EZBqxaUlrO_qXSuDTaBokUqY96QmLjMYqHZI8iLHuAKQ84ePwNKzaw/exec" method="POST" onsubmit="handleReviewSubmit(event)">
+
                 <div style="margin-bottom: 15px;">
                     <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px;">Ваше Имя / Никнейм:</label>
                     <input type="text" id="revName" name="name" required style="width: 100%; background: rgba(255,255,255,0.02); border: 1px solid var(--border-line); padding: 12px; border-radius: 4px; color: #fff; box-sizing: border-box; font-family: inherit;">
@@ -350,8 +351,7 @@
         </div>
     </div>
 
-    <script>
-        // БАЗА ДАННЫХ ДЛЯ ОКОН ПРЕДМЕТОВ: Уникальные фичи
+        <script>
         const subjectDetails = {
             math: [
                 "Секретные алгоритмы и шаблоны решений тригонометрии (Задание 13)",
@@ -421,7 +421,6 @@
             ]
         };
 
-        // Логика работы умного модального окна предметов
         function openSubjectModal(subjectName, startParam) {
             const modal = document.getElementById('subjectModal');
             const title = document.getElementById('modalSubjectName');
@@ -462,7 +461,6 @@
             document.getElementById('subjectModal').style.display = 'none';
         }
 
-        // Логика формы отзывов
         function openReviewModal() { 
             document.getElementById('reviewModal').style.display = 'flex'; 
             document.getElementById('webReviewForm').style.display = 'block';
@@ -473,9 +471,25 @@
             document.getElementById('reviewModal').style.display = 'none'; 
         }
 
-               // Автоматическая загрузка всех отзывов из Google Таблицы
+        // Отрисовка одной карточки отзыва на сайте
+        function appendReviewCard(name, subject, result, text) {
+            const reviewsContainer = document.getElementById('web-reviews-list');
+            if (!reviewsContainer || !text) return;
+
+            const card = document.createElement('div');
+            card.className = 'review-card';
+            card.innerHTML = `
+                <div class="review-author">${name || "Ученик"}</div>
+                <div class="review-meta">${subject}${result ? ' — ' + result : ''}</div>
+                <p class="review-text">«${text}»</p>
+            `;
+            reviewsContainer.insertBefore(card, reviewsContainer.firstChild);
+        }
+
+        // Загрузка всех отзывов из Google Таблицы при открытии сайта
+                // Загрузка всех отзывов из Google Таблицы при открытии сайта
         document.addEventListener("DOMContentLoaded", () => {
-            const csvUrl = "https://google.com" + Date.now();
+            const csvUrl = "https://script.google.com/macros/s/AKfycbz88EHQCeawmX_2EZBqxaUlrO_qXSuDTaBokUqY96QmLjMYqHZI8iLHuAKQ84ePwNKzaw/exec";
 
             fetch(csvUrl, { cache: "no-store" })
                 .then(res => res.text())
@@ -486,76 +500,47 @@
                     reviewsContainer.innerHTML = "";
                     const lines = csvText.split(/\r?\n/);
 
-                    // Начинаем с i = 1, чтобы пропустить строку заголовков
                     for (let i = 1; i < lines.length; i++) {
                         if (!lines[i].trim()) continue;
 
-                        // Разбиваем строку CSV с учетом возможных запятых внутри текста отзыва
-                        const columns = lines[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || lines[i].split(",");
+                        const columns = lines[i].match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g) || lines[i].split(",");
                         const clean = (val) => val ? val.replace(/^"|"$/g, '').replace(/""/g, '"').trim() : "";
 
-                        const name = clean(columns[0]) || "Ученик";
+                        const name = clean(columns[0]);
                         const subject = clean(columns[1]);
                         const result = clean(columns[2]);
                         const text = clean(columns[3]);
 
-                        if (!text) continue;
 
-                        const card = document.createElement('div');
-                        card.className = 'review-card';
-                        card.innerHTML = `
-                            <div class="review-author">${name}</div>
-                            <div class="review-meta">${subject}${result ? ' — ' + result : ''}</div>
-                            <p class="review-text">«${text}»</p>
-                        `;
-                        reviewsContainer.insertBefore(card, reviewsContainer.firstChild);
+                        appendReviewCard(name, subject, result, text);
                     }
                 })
                 .catch(err => console.error("Ошибка загрузки отзывов:", err));
         });
 
 
-        function renderUserReview(id, name, subject, result, text) {
-            const reviewsContainer = document.getElementById('web-reviews-list');
-            if (!reviewsContainer) return;
-            
-            const newCard = document.createElement('div');
-            newCard.className = 'review-card';
-            newCard.id = `user-review-${id}`;
-            newCard.style.position = 'relative';
-            newCard.style.border = '1px solid rgba(0, 255, 170, 0.15)';
-            
-            newCard.innerHTML = `
-                <button onclick="deleteSelectedReview(${id})" style="position: absolute; top: 15px; right: 20px; background: transparent; border: 1px solid #ff4a4a; color: #ff4a4a; font-size: 10px; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-family: inherit; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s;" onmouseover="this.style.background='#ff4a4a'; this.style.color='#fff';" onmouseout="this.style.background='transparent'; this.style.color='#ff4a4a';">Удалить этот отзыв</button>
-                <div class="review-author">${name} (Вы)</div>
-                <div class="review-meta">${subject} — ${result}</div>
-                <p class="review-text">«${text}»</p>
-            `;
-            
-            if (reviewsContainer.firstChild) {
-                reviewsContainer.insertBefore(newCard, reviewsContainer.firstChild);
-            } else {
-                reviewsContainer.appendChild(newCard);
-            }
-        }
-
-                function handleReviewSubmit(e) {
+        // Фоновая отправка отзыва без ухода со страницы
+        function handleReviewSubmit(e) {
             e.preventDefault();
             const form = document.getElementById('webReviewForm');
             
+            const nameVal = document.getElementById('revName').value;
+            const subjectVal = document.getElementById('revSubject').value;
+            const resultVal = document.getElementById('revResult').value;
+            const textVal = document.getElementById('revText').value;
+
             fetch(form.action, {
                 method: 'POST',
                 mode: 'no-cors',
                 body: new FormData(form)
             })
             .then(() => {
+                // Мгновенно показываем отзыв на странице, не дожидаясь кэша Google
+                appendReviewCard(nameVal, subjectVal, resultVal, textVal);
+
                 form.style.display = 'none';
                 document.getElementById('reviewSuccessMessage').style.display = 'block';
                 form.reset();
-                
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2500);
             })
             .catch(err => {
                 alert("Ошибка при отправке. Попробуйте позже.");
@@ -563,28 +548,6 @@
             });
         }
 
-
-        function deleteSelectedReview(id) {
-            const card = document.getElementById(`user-review-${id}`);
-            if (card) {
-                card.style.opacity = '0';
-                card.style.transform = 'scale(0.95)';
-                card.style.transition = 'all 0.3s ease';
-                
-                setTimeout(() => {
-                    card.remove();
-                    let currentReviews = localStorage.getItem("user_multiple_reviews");
-                    if (currentReviews) {
-                        let reviewsArray = JSON.parse(currentReviews);
-                        reviewsArray = reviewsArray.filter(rev => rev.id !== id);
-                        localStorage.setItem("user_multiple_reviews", JSON.stringify(reviewsArray));
-                    }
-                    console.log(`[СИСТЕМА]: Пользователь успешно удалил свой отзыв с ID: ${id}`);
-                }, 300);
-            }
-        }
-
-        // Переключение табов и динамическое изменение цен
         document.querySelectorAll('#class-tabs .class-item').forEach(tab => {
             tab.addEventListener('click', function() {
                 const isAvailable = this.getAttribute('data-available') === 'true';
@@ -605,14 +568,12 @@
             });
         });
 
-        // FAQ Аккордеон
         document.querySelectorAll('.faq-question').forEach(q => {
             q.addEventListener('click', function() {
                 this.parentElement.classList.toggle('active');
             });
         });
 
-        // Модальные окна для юридических документов
         const legalTexts = {
             agreement: {
                 title: "Пользовательское соглашение",
@@ -620,7 +581,7 @@
             },
             privacy: {
                 title: "Политика конфиденциальности",
-                content: "<p>Настоящая Politika конфиденциальности определяет порядок обработки личных данных пользователей.</p><p>Мы собираем только минимально необходимый набор данных для авторизации аккаунта через мессенджер Telegram и никогда не передаем информацию третьим лицам.</p>"
+                content: "<p>Настоящая Политика конфиденциальности определяет порядок обработки личных данных пользователей.</p><p>Мы собираем только минимально необходимый набор данных для авторизации аккаунта через мессенджер Telegram и никогда не передаем информацию третьим лицам.</p>"
             },
             offer: {
                 title: "Публичная оферта",
@@ -638,7 +599,6 @@
             document.getElementById('legalModal').style.display = 'none';
         }
 
-        // Закрытие по клику вовне
         window.onclick = function(event) {
             const subModal = document.getElementById('subjectModal');
             const legModal = document.getElementById('legalModal');
@@ -648,7 +608,6 @@
             if (event.target == revModal) revModal.style.display = 'none';
         }
 
-        // Редирект в Telegram
         document.querySelectorAll('.tg-redirect-btn').forEach(button => {
             button.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -658,15 +617,11 @@
                     window.location.href = tgProtocol;
                     setTimeout(() => { window.location.href = tgHttpsFallback; }, 1200);
                 } else {
-                window.location.href = tgProtocol;
-                setTimeout(() => { 
-                    if (document.hasFocus()) {
-                        window.location.href = tgHttpsFallback + "/Grind_SchoolControl_bot?start=site"; 
-                    }
-                }, 2000);
-            }
+                    window.location.href = tgProtocol;
+                    setTimeout(() => { if (document.hasFocus()) window.location.href = tgHttpsFallback; }, 2000);
+                }
+            });
         });
-    });
-</script>
+    </script>
 </body>
 </html>
