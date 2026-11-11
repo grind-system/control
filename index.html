@@ -486,7 +486,7 @@
             reviewsContainer.insertBefore(card, reviewsContainer.firstChild);
         }
 
-        function loadReviewsFromCSV() {
+                function loadReviewsFromCSV() {
             fetch(CSV_URL + "&t=" + Date.now())
                 .then(res => res.text())
                 .then(csvText => {
@@ -502,18 +502,18 @@
                         const cols = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                         const clean = (val) => val ? val.replace(/^"|"$/g, '').replace(/""/g, '"').trim() : "";
 
-                        const name = clean(cols[0]);
-                        const subject = clean(cols[1]);
-                        const result = clean(cols[2]);
-                        const text = clean(cols[3]);
-                        const id = clean(cols[4]);
-
+                        const name = clean(cols.at(0));
+                        const subject = clean(cols.at(1));
+                        const result = clean(cols.at(2));
+                        const text = clean(cols.at(3));
+                        const id = clean(cols.at(4));
 
                         appendReviewCard(id, name, subject, result, text);
                     }
                 })
                 .catch(err => console.error("Ошибка загрузки отзывов:", err));
         }
+
 
         document.addEventListener("DOMContentLoaded", () => {
             fetch(SCRIPT_URL)
