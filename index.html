@@ -310,7 +310,8 @@
             <div style="font-size: 10px; color: #00ffaa; font-family: monospace; letter-spacing: 2px; margin-bottom: 15px; text-align: center;">[РЕГИСТРАЦИЯ НОВОГО ОТЗЫВА]</div>
             <h2 style="text-align: center; margin-bottom: 25px; font-size: 22px;">Поделитесь результатом</h2>
             
-                       <form id="webReviewForm" action="https://script.google.com/macros/s/AKfycbz88EHQCeawmX_2EZBqxaUlrO_qXSuDTaBokUqY96QmLjMYqHZI8iLHuAKQ84ePwNKzaw/exec" method="POST" onsubmit="handleReviewSubmit(event)">
+                       <form id="webReviewForm" onsubmit="handleReviewSubmit(event)">
+
 
                 <div style="margin-bottom: 15px;">
                     <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px;">Ваше Имя / Никнейм:</label>
@@ -472,26 +473,38 @@
         }
 
         // Отрисовка одной карточки отзыва на сайте
-        function appendReviewCard(name, subject, result, text) {
+               const SCRIPT_URL = "https://google.com";
+        const CSV_URL = "https://google.com";
+
+        // 1. Отрисовка карточки (кнопка удаления появится только у автора)
+        function appendReviewCard(id, name, subject, result, text) {
             const reviewsContainer = document.getElementById('web-reviews-list');
             if (!reviewsContainer || !text) return;
 
+            const myIds = JSON.parse(localStorage.getItem('my_review_ids') || '[]');
+            const isMine = id && myIds.includes(String(id));
+
             const card = document.createElement('div');
             card.className = 'review-card';
+            if (id) card.id = 'rev-card-' + id;
+            card.style.position = 'relative';
+
+            const deleteBtn = isMine
+                ? `<button onclick="deleteMyReview('${id}')" style="position: absolute; top: 15px; right: 20px; background: transparent; border: 1px solid #ff4a4a; color: #ff4a4a; font-size: 10px; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-family: inherit; text-transform: uppercase;">Удалить мой отзыв</button>`
+                : '';
+
             card.innerHTML = `
-                <div class="review-author">${name || "Ученик"}</div>
+                ${deleteBtn}
+                <div class="review-author">${name || "Ученик"}${isMine ? ' (Вы)' : ''}</div>
                 <div class="review-meta">${subject}${result ? ' — ' + result : ''}</div>
                 <p class="review-text">«${text}»</p>
             `;
             reviewsContainer.insertBefore(card, reviewsContainer.firstChild);
         }
 
-        // Загрузка всех отзывов из Google Таблицы при открытии сайта
-                // Загрузка всех отзывов из Google Таблицы при открытии сайта
+        // 2. Загрузка всех отзывов из Google Таблицы при открытии сайта
         document.addEventListener("DOMContentLoaded", () => {
-            const csvUrl = "https://script.google.com/macros/s/AKfycbz88EHQCeawmX_2EZBqxaUlrO_qXSuDTaBokUqY96QmLjMYqHZI8iLHuAKQ84ePwNKzaw/exec";
-
-            fetch(csvUrl, { cache: "no-store" })
+            fetch(CSV_URL + "&t=" + Date.now())
                 .then(res => res.text())
                 .then(csvText => {
                     const reviewsContainer = document.getElementById('web-reviews-list');
@@ -503,50 +516,87 @@
                     for (let i = 1; i < lines.length; i++) {
                         if (!lines[i].trim()) continue;
 
-                        const columns = lines[i].match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g) || lines[i].split(",");
+                        const cols = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                         const clean = (val) => val ? val.replace(/^"|"$/g, '').replace(/""/g, '"').trim() : "";
 
-                        const name = clean(columns[0]);
-                        const subject = clean(columns[1]);
-                        const result = clean(columns[2]);
-                        const text = clean(columns[3]);
+                        const name = clean(cols[0]);
+                        const subject = clean(cols[1]);
+                        const result = clean(cols[2]);
+                        const text = clean(cols[3]);
+                        const id = clean(cols[4]);
 
-
-                        appendReviewCard(name, subject, result, text);
+                        appendReviewCard(id, name, subject, result, text);
                     }
                 })
                 .catch(err => console.error("Ошибка загрузки отзывов:", err));
         });
 
-
-        // Фоновая отправка отзыва без ухода со страницы
+        // 3. Отправка нового отзыва без вылета со страницы
         function handleReviewSubmit(e) {
             e.preventDefault();
             const form = document.getElementById('webReviewForm');
-            
+
             const nameVal = document.getElementById('revName').value;
             const subjectVal = document.getElementById('revSubject').value;
             const resultVal = document.getElementById('revResult').value;
             const textVal = document.getElementById('revText').value;
+            const reviewId = String(Date.now());
 
-            fetch(form.action, {
+            // Запоминаем ID в браузере автора
+            const myIds = JSON.parse(localStorage.getItem('my_review_ids') || '[]');
+            myIds.push(reviewId);
+            localStorage.setItem('my_review_ids', JSON.stringify(myIds));
+
+            const params = new URLSearchParams();
+            params.append('name', nameVal);
+            params.append('subject', subjectVal);
+            params.append('result', resultVal);
+            params.append('message', textVal);
+            params.append('id', reviewId);
+
+            fetch(SCRIPT_URL, {
                 method: 'POST',
                 mode: 'no-cors',
-                body: new FormData(form)
+                body: params
             })
             .then(() => {
-                // Мгновенно показываем отзыв на странице, не дожидаясь кэша Google
-                appendReviewCard(nameVal, subjectVal, resultVal, textVal);
-
+                appendReviewCard(reviewId, nameVal, subjectVal, resultVal, textVal);
                 form.style.display = 'none';
                 document.getElementById('reviewSuccessMessage').style.display = 'block';
                 form.reset();
             })
-            .catch(err => {
-                alert("Ошибка при отправке. Попробуйте позже.");
-                console.error(err);
+            .catch(err => console.error("Ошибка отправки:", err));
+        }
+
+        // 4. Удаление выбранного отзыва с экрана и из Google Таблицы
+        function deleteMyReview(id) {
+            const card = document.getElementById('rev-card-' + id);
+            if (card) card.remove();
+
+            let myIds = JSON.parse(localStorage.getItem('my_review_ids') || '[]');
+            myIds = myIds.filter(item => item !== String(id));
+            localStorage.setItem('my_review_ids', JSON.stringify(myIds));
+
+            const params = new URLSearchParams();
+            params.append('action', 'delete');
+            params.append('id', id);
+
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: params
             });
         }
+
+            
+            then(() => {
+                appendReviewCard(nameVal, subjectVal, resultVal, textVal);
+                form.style.display = 'none';
+                document.getElementById('reviewSuccessMessage').style.display = 'block';
+                form.reset();
+            })
+            .catch(err => console.error("Ошибка отправки:", err));
+        
 
         document.querySelectorAll('#class-tabs .class-item').forEach(tab => {
             tab.addEventListener('click', function() {
