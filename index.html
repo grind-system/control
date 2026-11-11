@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GRIND: SCHOOL CONTROL — Образовательная экосистема</title>
-    <!-- Современный технологичный шрифт Inter -->
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
     <link href="https://googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -62,7 +61,7 @@
 
         .section-title { text-align: center; font-size: 24px; font-weight: 600; margin: 70px 0 25px 0; letter-spacing: -0.5px; }
         
-        .grid-classes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background-color: var(--border-line); margin-bottom: 40px; border: 1px solid var(--border-line); border-radius: 6px; overflow: hidden; }
+        .grid-classes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background-color: var(--border-line); margin-bottom: 40px; border: 1px solid var(--border-line); border-radius: 6px; overflow: hidden; }
         .class-item { background-color: rgba(255,255,255, 0.01); padding: 20px 10px; text-align: center; font-size: 13px; color: var(--text-muted); cursor: pointer; user-select: none; transition: background 0.2s; }
         .class-item:hover { color: var(--text-white); background: rgba(255, 255, 255, 0.02); }
         .class-item.active { color: var(--text-white); background-color: rgba(17, 105, 75, 0.15); font-weight: 500; box-shadow: inset 0 -2px 0 var(--accent-green); }
@@ -87,7 +86,7 @@
 
         .reviews-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 30px; }
         .review-card { background: var(--card-bg); border: 1px solid var(--border-line); padding: 25px; border-radius: 6px; }
-        .review-author { font-size: 14px; font-weight: 600; margin-bottom: 5px; color: var(--text-white); }
+        .review-author { font-size: 14px; font-weight: 600; margin-bottom: 5px; color: var(--text-white); padding-right: 130px; }
         .review-meta { font-size: 12px; color: var(--accent-green); margin-bottom: 12px; }
         .review-text { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin: 0; }
 
@@ -155,7 +154,6 @@
             <div class="class-item" data-available="false" data-price="299">Профили</div>
         </section>
 
-        <!-- Интерактивная матрица предметов ЕГЭ (без IT, МЕД и ГУМ карточек) -->
         <section class="subjects-container">
             <div class="subject-card" onclick="openSubjectModal('Математика', 'math')">
                 <h3>🧮 Математика</h3>
@@ -213,7 +211,7 @@
         <div class="section-title" id="about">О проекте</div>
         <section class="about-box">
             <p><strong>GRIND: SCHOOL CONTROL</strong> — закрытая цифровая экосистема, созданная командой независимых разработчиков и практикующих методистов. Наша цель — децентрализовать подготовку к экзаменам и убрать из нее всю лишнюю «воду», вебинары на 3 часа и завышенные ценники онлайн-школ.</p>
-            <p>Мы собираем, верифицируем и упаковываем кодификаторы ФИПИ в лаконичные карточки теории и алгоритмы решений. Вся база транслируется в защищенном режиме с 19:00 до 21:00 . Вы платите только за те предметы, которые гриндите на результат.</p>
+            <p>Мы собираем, верифицируем и упаковываем кодификаторы ФИПИ в лаконичные карточки теории и алгоритмы решений. Вся база транслируется в защищенном режиме 24/7. Вы платите только за те предметы, которые гриндите на результат.</p>
         </section>
 
         <div class="section-title" id="how-it-works">Архитектура системы</div>
@@ -236,11 +234,8 @@
         </section>
 
         <div class="section-title" id="reviews">Отзывы участников</div>
-        <section class="reviews-container" id="web-reviews-list">
-            
-        </section>
+        <section class="reviews-container" id="web-reviews-list"></section>
         
-        <!-- КНОПКА ОТЗЫВОВ -->
         <div style="text-align: center; margin-bottom: 90px;">
             <button onclick="openReviewModal()" class="btn-main" style="background-color: transparent; border: 1px solid var(--accent-green); color: var(--text-white);">Оставить отзыв о системе</button>
         </div>
@@ -257,7 +252,7 @@
             </div>
             <div class="faq-item">
                 <div class="faq-question">Как работает блокировка подписки?</div>
-                <div class="faq-answer">Подписка оформляется ровно на 30 дней. Система автоматически высчитывает время доступа. При клике по кнопке бот проверяет статус — если срок исчез, доступ закрывается до следующего продления.</div>
+                <div class="faq-answer">Подписка оформляется ровно на 30 дней. Система автоматически высчитывает время доступа. При клике по кнопке бот проверяет статус — если срок истек, доступ закрывается до следующего продления.</div>
             </div>
         </section>
 
@@ -275,18 +270,17 @@
                         <span onclick="openLegalModal('privacy')">Политика конфиденциальности</span>
                         <span onclick="openLegalModal('offer')">Публичная оферта</span>
                     </div>
-                    <div>Контакты: alisomonlangarshoev@gmail.com</div>
+                    <div>Контакты: support@grindcontrol.ru</div>
                 </div>
                 <div class="footer-legal">
                     &copy; 2026 GRIND EDUCATIONAL ECOSYSTEM. Все права защищены.<br>
-                    Правообладатель (Самозанятый): Алисомон Лангаршоев, ИНН: 503133944046.<br>
+                    Правообладатель: Самозанятый Алисомон Лангаршоев, ИНН: 503133944046.<br>
                     Сайт носит информационный характер.
                 </div>
             </div>
         </footer>
     </div>
 
-    <!-- Интерактивное модальное окно для предметов -->
     <div id="subjectModal" class="modal-overlay">
         <div class="modal-box">
             <span onclick="closeSubjectModal()" class="modal-close">&times;</span>
@@ -295,24 +289,20 @@
             
             <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-line); padding: 20px; border-radius: 6px; margin-bottom: 25px;">
                 <div style="font-size: 11px; text-transform: uppercase; color: #ffffff; letter-spacing: 1px; margin-bottom: 12px; font-weight: 600;">Содержимое базы знаний:</div>
-                <ul id="modalSubjectFeatures" style="margin: 0; padding-left: 20px; color: #7e8b85; font-size: 13px; line-height: 1.8;">
-                </ul>
+                <ul id="modalSubjectFeatures" style="margin: 0; padding-left: 20px; color: #7e8b85; font-size: 13px; line-height: 1.8;"></ul>
             </div>
             
             <a id="modalTgLink" href="#" class="btn-main" style="text-decoration: none; display: block; width: 100%; box-sizing: border-box;">Инициализировать загрузку в Telegram</a>
         </div>
     </div>
 
-    <!-- Модальное окно для отзывов прямо на сайте -->
     <div id="reviewModal" class="modal-overlay">
         <div class="modal-box" style="max-width: 500px;">
             <span onclick="closeReviewModal()" class="modal-close">&times;</span>
             <div style="font-size: 10px; color: #00ffaa; font-family: monospace; letter-spacing: 2px; margin-bottom: 15px; text-align: center;">[РЕГИСТРАЦИЯ НОВОГО ОТЗЫВА]</div>
             <h2 style="text-align: center; margin-bottom: 25px; font-size: 22px;">Поделитесь результатом</h2>
             
-                       <form id="webReviewForm" onsubmit="handleReviewSubmit(event)">
-
-
+            <form id="webReviewForm" onsubmit="handleReviewSubmit(event)">
                 <div style="margin-bottom: 15px;">
                     <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px;">Ваше Имя / Никнейм:</label>
                     <input type="text" id="revName" name="name" required style="width: 100%; background: rgba(255,255,255,0.02); border: 1px solid var(--border-line); padding: 12px; border-radius: 4px; color: #fff; box-sizing: border-box; font-family: inherit;">
@@ -329,30 +319,29 @@
                     <label style="display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 5px;">Текст отзыва:</label>
                     <textarea id="revText" name="message" rows="4" required style="width: 100%; background: rgba(255,255,255,0.02); border: 1px solid var(--border-line); padding: 12px; border-radius: 4px; color: #fff; box-sizing: border-box; font-family: inherit; resize: none; line-height: 1.5;"></textarea>
                 </div>
-                <button type="submit" class="btn-main" style="width: 100%; border: none;">Отправить на верификацию</button>
+                <button type="submit" class="btn-main" style="width: 100%; border: none;">Опубликовать отзыв</button>
             </form>
-
             
             <div id="reviewSuccessMessage" style="display: none; text-align: center; padding: 30px 0;">
                 <div style="font-size: 48px; margin-bottom: 15px;">🪙</div>
-                <h3 style="color: #00ffaa; margin: 0 0 10px 0; font-weight: 500;">Отзыв принят</h3>
-                <p style="color: var(--text-muted); font-size: 13px; line-height: 1.6;">Благодарим за фидбек. После проверки модератором экосистемы ваш отзыв будет опубликован на главной странице.</p>
+                <h3 style="color: #00ffaa; margin: 0 0 10px 0; font-weight: 500;">Отзыв опубликован</h3>
+                <p style="color: var(--text-muted); font-size: 13px; line-height: 1.6;">Ваш отзыв добавлен на страницу и виден всем посетителям. Вы можете удалить его в любой момент кнопкой на карточке.</p>
             </div>
         </div>
     </div>
 
-    <!-- Модальное окно юридических документов -->
     <div id="legalModal" class="modal-overlay">
         <div class="modal-box">
             <span onclick="closeLegalModal()" class="modal-close">&times;</span>
             <h2 id="legalModalTitle">Документ</h2>
-            <div id="legalModalContent" style="color: #7e8b85; font-size: 13px; line-height: 1.6; max-height: 50vh; overflow-y: auto; padding-right: 10px;">
-                Текст документа...
-            </div>
+            <div id="legalModalContent" style="color: #7e8b85; font-size: 13px; line-height: 1.6; max-height: 50vh; overflow-y: auto; padding-right: 10px;"></div>
         </div>
     </div>
 
-        <script>
+    <script>
+        const SCRIPT_URL = "https://google.com";
+        const CSV_URL = "https://google.com";
+
         const subjectDetails = {
             math: [
                 "Секретные алгоритмы и шаблоны решений тригонометрии (Задание 13)",
@@ -472,10 +461,6 @@
             document.getElementById('reviewModal').style.display = 'none'; 
         }
 
-        // Отрисовка одной карточки отзыва на сайте
-                const SCRIPT_URL = "https://google.com";
-
-        // 1. Отрисовка карточки на сайте
         function appendReviewCard(id, name, subject, result, text) {
             const reviewsContainer = document.getElementById('web-reviews-list');
             if (!reviewsContainer || !text) return;
@@ -501,7 +486,35 @@
             reviewsContainer.insertBefore(card, reviewsContainer.firstChild);
         }
 
-        // 2. Мгновенная загрузка всех отзывов для всех посетителей сайта
+        function loadReviewsFromCSV() {
+            fetch(CSV_URL + "&t=" + Date.now())
+                .then(res => res.text())
+                .then(csvText => {
+                    const reviewsContainer = document.getElementById('web-reviews-list');
+                    if (!reviewsContainer) return;
+
+                    reviewsContainer.innerHTML = "";
+                    const lines = csvText.split(/\r?\n/);
+
+                    for (let i = 1; i < lines.length; i++) {
+                        if (!lines[i].trim()) continue;
+
+                        const cols = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                        const clean = (val) => val ? val.replace(/^"|"$/g, '').replace(/""/g, '"').trim() : "";
+
+                        const name = clean(cols[0]);
+                        const subject = clean(cols[1]);
+                        const result = clean(cols[2]);
+                        const text = clean(cols[3]);
+                        const id = clean(cols[4]);
+
+
+                        appendReviewCard(id, name, subject, result, text);
+                    }
+                })
+                .catch(err => console.error("Ошибка загрузки отзывов:", err));
+        }
+
         document.addEventListener("DOMContentLoaded", () => {
             fetch(SCRIPT_URL)
                 .then(res => res.json())
@@ -514,10 +527,11 @@
                         appendReviewCard(rev.id, rev.name, rev.subject, rev.result, rev.text);
                     });
                 })
-                .catch(err => console.error("Ошибка загрузки отзывов:", err));
+                .catch(() => {
+                    loadReviewsFromCSV();
+                });
         });
 
-        // 3. Отправка нового отзыва в таблицу и на сайт
         function handleReviewSubmit(e) {
             e.preventDefault();
             const form = document.getElementById('webReviewForm');
@@ -553,7 +567,6 @@
             .catch(err => console.error("Ошибка отправки:", err));
         }
 
-        // 4. Удаление своего отзыва с экрана и из таблицы
         function deleteMyReview(id) {
             const card = document.getElementById('rev-card-' + id);
             if (card) card.remove();
@@ -572,17 +585,6 @@
                 body: params
             });
         }
-
-
-            
-            then(() => {
-                appendReviewCard(nameVal, subjectVal, resultVal, textVal);
-                form.style.display = 'none';
-                document.getElementById('reviewSuccessMessage').style.display = 'block';
-                form.reset();
-            })
-            .catch(err => console.error("Ошибка отправки:", err));
-        
 
         document.querySelectorAll('#class-tabs .class-item').forEach(tab => {
             tab.addEventListener('click', function() {
